@@ -14,7 +14,7 @@ chmod 755 $SEDFILE
 # Create javascript replacement array
 {
 	echo 'var NIFTYCODE_REPLACEMENTS = ['
-	sed -ne's/\\\([0-9]\)/$\1/g; s/^s\(.\)\(.*[^\\]\)\1\(.*[^\\]\)\1\(.*\)$/\t[\/\2\/\4, "\3"],/p' $SEDFILE
+	sed -ne's/\\\([0-9]\)/$\1/g; s/^s\(.\)\(.*[^\\]\)\1\(.*[^\\]\)\1\(.*\)$/\t[\/\2\/\4, "\3"]/p' $SEDFILE | sed '$!s/.*/&,/'
 	echo '];'
 } > bin/niftycode.js
 
@@ -48,10 +48,21 @@ cpp -P -C -I bin <<EOF > bin/niftyjavascript.js
 		var language = e.getAttribute('language');
 		if ( ! isnc.test(language) )
 			continue;
-		e.setAttribute( 'language', language.replace(isnc, 'javascript') );
-		e.firstChild.data = denifty(e.firstChild.data);
+		var s = document.createElement('script');
+		s.setAttribute( 'language', language.replace(isnc, 'javascript') );
+		s.text = denifty(e.text);
+		s.type = e.type;
+		var sib = e.nextSibling;
+		var parent = e.parentNode;
+		parent.removeChild(e);
+		parent.insertBefore(s, sib);
 	}
 
-	document.body.setAttribute('onload', denifty(document.body.getAttribute('onload')));
+	if (document.body.getAttribute('niftyonload')) {
+		var str = denifty(document.body.getAttribute('niftyonload'));
+		document.body.removeAttribute('niftyonload');
+		//document.body.setAttribute('onload', new Function(str) )
+		document.body.onload = new Function('event', str);
+	}
 })();
 EOF

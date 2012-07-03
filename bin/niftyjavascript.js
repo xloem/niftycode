@@ -10,7 +10,7 @@
 (function() {
 var NIFTYCODE_REPLACEMENTS = [
  [/(\w)\!\(/g, "$1_mutator\("],
- [/(\w)\?\(/g, "$1_predicate\("],
+ [/(\w)\?\(/g, "$1_predicate\("]
 ];
  var ncres = NIFTYCODE_REPLACEMENTS;
  function denifty(str) {
@@ -26,9 +26,28 @@ var NIFTYCODE_REPLACEMENTS = [
   var language = e.getAttribute('language');
   if ( ! isnc.test(language) )
    continue;
-  e.setAttribute( 'language', language.replace(isnc, 'javascript') );
-  e.firstChild.data = denifty(e.firstChild.data);
+  var s = document.createElement('script');
+  s.setAttribute( 'language', language.replace(isnc, 'javascript') );
+  s.text = denifty(e.text);
+  s.type = e.type;
+  //e.setAttribute( 'language', language.replace(isnc, 'javascript') );
+  //e.text = denifty(e.text);
+  //e.type = 'text/javascript';
+  var sib = e.nextSibling;
+  var parent = e.parentNode;
+  parent.removeChild(e);
+  parent.insertBefore(s, sib);
+  //parent.insertBefore(e, sib);
+  //var s = document.createElement('script');
+  //s.type = 'text/javascript';
+  //s.text = e.text;
+  //parent.appendChild(s);
  }
 
- document.body.setAttribute('onload', denifty(document.body.getAttribute('onload')));
+ if (document.body.getAttribute('niftyonload')) {
+  var str = denifty(document.body.getAttribute('niftyonload'));
+  document.body.removeAttribute('niftyonload');
+  //document.body.setAttribute('onload', new Function(str) )
+  document.body.onload = new Function('event', str);
+ }
 })();
