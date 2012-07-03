@@ -21,12 +21,14 @@ chmod 755 $SEDFILE
 # Create standalone javascript
 cpp -P -C -I bin <<EOF > bin/niftyjavascript.js
 /*
- * Intended be included at the tail of a document, this script file will process:
+ * Intended to be included at the tail of a document, this script file will process:
  *
  * - all inline scripts of the form <script language="niftyjavascript.*"></script>
- * - document.body.onload
+ * - document.body.niftyonload into document.body.onload
  *
- * TODO: process other inline events
+ * TODO: process other inline events, parse remotely loaded scripts
+ *
+ * Update this script where it is made in generate.sh .
  */
 
 (function() {

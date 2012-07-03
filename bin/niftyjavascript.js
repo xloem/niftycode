@@ -30,18 +30,10 @@ var NIFTYCODE_REPLACEMENTS = [
   s.setAttribute( 'language', language.replace(isnc, 'javascript') );
   s.text = denifty(e.text);
   s.type = e.type;
-  //e.setAttribute( 'language', language.replace(isnc, 'javascript') );
-  //e.text = denifty(e.text);
-  //e.type = 'text/javascript';
   var sib = e.nextSibling;
   var parent = e.parentNode;
   parent.removeChild(e);
   parent.insertBefore(s, sib);
-  //parent.insertBefore(e, sib);
-  //var s = document.createElement('script');
-  //s.type = 'text/javascript';
-  //s.text = e.text;
-  //parent.appendChild(s);
  }
 
  if (document.body.getAttribute('niftyonload')) {
