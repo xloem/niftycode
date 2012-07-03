@@ -1,0 +1,17 @@
+<html>
+<head>
+	<script language="niftyjavascript">
+		function init!() {
+			var output = document.getElementById('output');
+			output.innerText = equal?(1, 2) ? "1 == 2" : "1 != 2";
+		}
+		function equal?(a, b) {
+			return a == b;
+		}
+	</script>
+</head>
+<body onload="init!()">
+	<textarea id="output"></textarea>
+</body>
+<script src="../bin/niftyjavascript.js"></script>
+</html>
